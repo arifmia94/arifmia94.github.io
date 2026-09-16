@@ -9,6 +9,14 @@
      <div id="site-footer"></div>
      <script src="site-common.js"></script>
 
+   ফাইল স্ট্রাকচার (সব ফাইল একই ফোল্ডারে, রুটে):
+     header.html
+     footer.html
+     site-common.js
+     index.html
+     project-id-card.html
+     ...
+
    গুরুত্বপূর্ণ: fetch() ব্যবহার হয় বলে এটি http(s):// দিয়ে সার্ভ করা পেজে
    কাজ করবে (যেমন GitHub Pages, Netlify, বা লোকাল সার্ভার — VS Code এর
    "Live Server" এক্সটেনশন / `python -m http.server`)। সরাসরি ফাইলে
@@ -58,8 +66,8 @@
 
   document.addEventListener("DOMContentLoaded", async function () {
     await Promise.all([
-      includeHTML("#site-header", base + "partials/header.html"),
-      includeHTML("#site-footer", base + "partials/footer.html"),
+      includeHTML("#site-header", base + "header.html"),
+      includeHTML("#site-footer", base + "footer.html"),
     ]);
 
     highlightActiveLink();
