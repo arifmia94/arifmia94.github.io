@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="bn" data-bs-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAN Employee Data Form</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+
+<style>
+  /* ===== Theme tokens — drives every Bootstrap component below ===== */
+  :root{
+    --bs-primary: #1567C9;
+    --bs-primary-rgb: 21,103,201;
+    --bs-secondary: #33343A;
+    --bs-secondary-rgb: 51,52,58;
+    --bs-body-font-family: 'Inter','Noto Sans Bengali',sans-serif;
+    --bs-body-bg: #F5F7FB;
+    --bs-body-color: #1A1B1E;
+    --bs-border-radius: .75rem;
+    --bs-border-radius-sm: .5rem;
+    --bs-border-radius-lg: 1rem;
+    --bs-border-radius-xl: 1.25rem;
+    --bs-border-radius-2xl: 1.75rem;
+    --bs-link-color: var(--bs-primary);
+    --bs-link-hover-color: #0F52A3;
+    --font-display: 'Poppins', sans-serif;
+  }
+  h1,h2,h3,h4,.navbar-brand,.fw-display{font-family:var(--font-display);}
+  ::selection{background:var(--bs-primary);color:#fff;}
+
+  .glass-nav{background:rgba(255,255,255,.85);backdrop-filter:blur(10px);}
+  .navbar-nav .nav-link, .navbar-nav .dropdown-item{font-size:.8rem;}
+</style>
+</head>
+<body>
+
+<!-- ইউনিভার্সেল হেডার — site-common.js এই ডিভে header.html ফেচ করে বসিয়ে দেবে -->
+<div id="appRoot">
+<div id="site-header"></div>
+
+<section style="padding-top:9.5rem;padding-bottom:6rem;">
+  <div class="container container-xl">
+
+    <style>
+      /*=========CUSTOM CSS FOR = SANGRAM Employee Data FORM ================= */
+      .photo-thumb-size{ width:46px; height:56px; padding:2px; }
+      #photoThumb img{ width:100%; height:100%; object-fit:cover; }
+
+      .saving-overlay{
+        position:fixed; inset:0; z-index:2000;
+        background:rgba(245,247,251,.55);
+        display:flex; flex-direction:column; align-items:center; justify-content:center;
+        gap:.75rem;
+      }
+      #appRoot.is-locked{
+        filter:blur(4px);
+        pointer-events:none;
+        user-select:none;
+      }
+
+      /* ফর্মের কার্ড আগের মতোই হালকা ধূসর থাকবে — শুধু লেখার জায়গাটা (ইনপুট বক্স) সাদা */
+      #idForm .form-control,
+      #idForm .form-select,
+      #idForm textarea.form-control{
+        background-color:#fff;
+      }
+      /* Placeholder/ডেমো টেক্সট আরও হালকা, যাতে বোঝা যায় ফিল্ডটা খালি আছে */
+      #idForm .form-control::placeholder{
+        color:#B4B8C0;
+        opacity:1;
+      }
+      /*=========================================================== */
+    </style>
+
+    <!-- ==SANGRAM Employee Data FORM CODE HERE, START============================ -->
+    <div class="container py-4 py-md-5">
+
+      <h1 class="h4 fw-bold text-center mb-4">Project A - SANG Employee Data Form</h1>
+
+      <div class="bg-white rounded-4 shadow p-4 p-md-5 mx-auto" style="max-width:820px;">
+
+        <div class="d-flex align-items-center gap-3 pb-3 mb-4 border-bottom border-primary border-2">
+          <img src="assets/san-logo.jpg" alt="SANGRAM logo" style="width:46px;height:46px;object-fit:contain;" onerror="this.style.display='none'">
+          <div>
+            <div class="fw-bold fs-5" id="orgName">SANGRAM (Sangathita Gramunnyan Karmasuchi)</div>
+            <div class="text-muted small">65,Shahid Smriti Sarak, Barguna-8700, www.sangram.ngo</div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <p class="text-muted small mb-0">Employee Data Collection Form</p>
+        </div>
+
+        <div class="alert alert-danger small d-none" id="configWarning">
+          Setup incomplete: replace <code>GOOGLE_SCRIPT_URL</code> inside this file with your Google Apps Script Web App URL, otherwise submissions will not be saved.
+        </div>
+
+        <div class="alert alert-success small d-none" id="toast" role="alert"></div>
+
+        <form id="idForm">
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="row g-3">
+
+                <div class="col-md-6">
+                  <label for="fEmpId" class="form-label">Employee ID *</label>
+                  <input type="text" id="fEmpId" class="form-control" required placeholder="e.g. EMP-1024">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fGender" class="form-label">Gender *</label>
+                  <select id="fGender" class="form-select" required>
+                    <option value="" disabled selected>Select gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </select>
+                  <div class="invalid-feedback">Please select a gender.</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fName" class="form-label">Employee Name *</label>
+                  <input type="text" id="fName" class="form-control" required placeholder="Full name as it should appear on the card">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fDesignation" class="form-label">Designation *</label>
+                  <input type="text" id="fDesignation" class="form-control" list="designationList" required placeholder="Select or type designation" autocomplete="off">
+                  <datalist id="designationList">
+				    <option value="Support Staff">
+                    <option value="Field Officer">
+                    <option value="Accountant">
+                    <option value="Branch Manager">
+                    <option value="Area Manager">
+                    <option value="Program Officer">
+                  </datalist>
+                  <div class="form-text mb-0">লিস্টে না থাকলে সরাসরি লিখুন।</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fDob" class="form-label">Date of Birth *</label>
+                  <input type="date" id="fDob" class="form-control" required>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fBlood" class="form-label">Blood Group *</label>
+                  <select id="fBlood" class="form-select" required>
+                    <option value="" disabled selected>Select blood group</option>
+                    <option>A+</option><option>A-</option>
+                    <option>B+</option><option>B-</option>
+                    <option>AB+</option><option>AB-</option>
+                    <option>O+</option><option>O-</option>
+                  </select>
+                  <div class="invalid-feedback">Please select a blood group.</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fMobile" class="form-label">Mobile Number *</label>
+                  <input type="tel" id="fMobile" class="form-control" inputmode="numeric" pattern="[0-9]*" maxlength="11" required placeholder="e.g. 01XXXXXXXXX">
+                  <div class="invalid-feedback">Digits only, e.g. 01XXXXXXXXX.</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fNid" class="form-label">NID Number *</label>
+                  <input type="text" id="fNid" class="form-control" inputmode="numeric" pattern="[0-9]*" maxlength="17" required placeholder="National ID number">
+                  <div class="invalid-feedback">Digits only.</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fEmail" class="form-label">Your Email <span class="text-muted">(not mandatory)</span></label>
+                  <input type="email" id="fEmail" class="form-control" placeholder="name@example.com">
+                </div>
+
+                <div class="col-12">
+                  <label for="fAddress" class="form-label">Permanent Address *</label>
+                  <textarea id="fAddress" class="form-control" required rows="3" placeholder="Village/Area, Post Office, Upazila, District"></textarea>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fGuardian" class="form-label">Guardian Name *</label>
+                  <input type="text" id="fGuardian" class="form-control" required placeholder="Father's/Husband's name">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fBranch" class="form-label">Branch Name *</label>
+                  <input type="text" id="fBranch" class="form-control" required placeholder="e.g. Barguna Branch">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fAreaOffice" class="form-label">Area Office *</label>
+                  <input type="text" id="fAreaOffice" class="form-control" required placeholder="e.g. Barisal Area Office">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fStaffCategory" class="form-label">Staff Category *</label>
+                  <select id="fStaffCategory" class="form-select" required>
+                    <option value="" disabled selected>Select category</option>
+                    <option>Project Staff</option>
+                    <option>Trainee Staff</option>
+                    <option>Permanent Staff</option>
+                  </select>
+                  <div class="invalid-feedback">Please select a staff category.</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fJoining" class="form-label">Joining Date *</label>
+                  <input type="date" id="fJoining" class="form-control" required>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label d-block">Your Photo *</label>
+                  <div class="d-flex align-items-center gap-3">
+                    <div id="photoThumb" class="img-thumbnail d-flex align-items-center justify-content-center text-muted small photo-thumb-size">No photo</div>
+                    <div>
+                      <label for="fPhoto" class="btn btn-outline-primary btn-sm mb-1">Choose photo</label>
+                      <input type="file" id="fPhoto" class="d-none" accept=".jpg,.jpeg,.png,image/jpeg,image/png" required>
+                      <div class="form-text mb-0">JPG, JPEG or PNG, max 10MB</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <label for="fRemarks" class="form-label">Remarks *</label>
+                  <input type="text" id="fRemarks" class="form-control" list="remarksList" required placeholder="Select or type remarks" autocomplete="off">
+                  <datalist id="remarksList">
+                    <option value="আমি অফিস আইডি কার্ড পেয়েছি।">
+                    <option value="আমার শিক্ষানবিশকাল সম্পন্ন হওয়ায় অফিস আইডি কার্ড প্রয়োজন।">
+                    <option value="অন্যান্য  (সংশ্লিষ্ট কর্মকর্তার সঙ্গে যোগাযোগ হয়েছে।)">
+                  </datalist>
+                  <div class="form-text mb-0">লিস্টে না থাকলে সরাসরি লিখুন।</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-light border small d-flex align-items-center gap-2">
+            <span>⚠️</span> Please verify all information carefully before submitting.
+          </div>
+
+          <div class="d-flex align-items-center gap-3">
+            <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold" id="submitBtn">Submit</button>
+            <span class="text-muted small" id="statusMsg"></span>
+          </div>
+        </form>
+
+        <div class="text-center small text-muted border-top pt-3 mt-4">
+          <div>Your information is securely stored and kept confidential.</div>
+          <div class="mt-2">Crafted by <span class="text-primary fw-bold">Arif Mia</span></div>
+        </div>
+
+      </div>
+    </div>
+    <!-- =================SANGRAM Employee Data FORM CODE HERE, END============================ -->
+
+  </div>
+</section>
+
+<!-- ইউনিভার্সেল ফুটার — site-common.js এই ডিভে footer.html ফেচ করে বসিয়ে দেবে -->
+<div id="site-footer"></div>
+</div><!-- /#appRoot -->
+
+<!-- সাবমিট চলাকালীন পুরো পেজ ব্লার করে রাখার ওভারলে -->
+<div id="savingOverlay" class="saving-overlay d-none">
+  <div class="spinner-border text-primary" role="status"></div>
+  <div class="fw-semibold text-secondary">Saving, please wait…</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<!-- ইউনিভার্সেল হেডার/ফুটার লোডার — সব পেজে একইভাবে যোগ করলেই যথেষ্ট -->
+<script src="site-common.js"></script>
+<script>
+
+// ==================== Form script START ======= SANGRAM Employee Data ============
+  const $ = (id) => document.getElementById(id);
+  const MAX_PHOTO_BYTES = 10 * 1024 * 1024; // 10MB
+  let photoDataUrl = "";
+
+  // ================================================================
+  // Paste your Google Apps Script Web App URL here (see setup instructions)
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1WcGescGKtzxa4PKlQ3RrkJc8Cz_JXk1_yJMRSg3qWC1n9ukQiUqW6Iy-nWinlE1AYA/exec";
+  // ================================================================
+
+  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.indexOf("PASTE_YOUR") === 0) {
+    $('configWarning').classList.remove('d-none');
+  }
+
+  $('fPhoto').addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    const statusEl = $('statusMsg');
+    statusEl.textContent = '';
+    statusEl.className = 'text-muted small';
+    if(!file) return;
+
+    const isValidType = file.type === 'image/jpeg' || file.type === 'image/png' || /\.(jpe?g|png)$/i.test(file.name);
+    if(!isValidType){
+      statusEl.textContent = 'Only JPG or PNG photos are accepted.';
+      statusEl.className = 'text-danger small';
+      e.target.value = '';
+      return;
+    }
+    if(file.size > MAX_PHOTO_BYTES){
+      statusEl.textContent = 'Photo must be 10MB or smaller.';
+      statusEl.className = 'text-danger small';
+      e.target.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      photoDataUrl = ev.target.result;
+      $('photoThumb').innerHTML = '<img src="'+photoDataUrl+'">';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function lockForm(){
+    $('appRoot').classList.add('is-locked');
+    $('savingOverlay').classList.remove('d-none');
+    document.querySelectorAll('#idForm input, #idForm select, #idForm textarea, #idForm button')
+      .forEach(el => el.disabled = true);
+  }
+
+  function unlockForm(){
+    $('appRoot').classList.remove('is-locked');
+    $('savingOverlay').classList.add('d-none');
+    document.querySelectorAll('#idForm input, #idForm select, #idForm textarea, #idForm button')
+      .forEach(el => el.disabled = false);
+  }
+
+  $('idForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const statusEl = $('statusMsg');
+    statusEl.textContent = '';
+    statusEl.className = 'text-muted small';
+
+    if(!$('idForm').checkValidity()){
+      $('idForm').reportValidity();
+      return;
+    }
+    if(!photoDataUrl){
+      statusEl.textContent = 'Please choose a photo.';
+      statusEl.className = 'text-danger small';
+      return;
+    }
+    if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.indexOf("PASTE_YOUR") === 0) {
+      statusEl.textContent = 'Google Script URL is not configured yet.';
+      statusEl.className = 'text-danger small';
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append('empId', $('fEmpId').value.trim());
+    fd.append('gender', $('fGender').value);
+    fd.append('name', $('fName').value.trim());
+    fd.append('designation', $('fDesignation').value.trim());
+    fd.append('dob', $('fDob').value);
+    fd.append('blood', $('fBlood').value);
+    fd.append('mobile', $('fMobile').value.trim());
+    fd.append('nid', $('fNid').value.trim());
+    fd.append('email', $('fEmail').value.trim());
+    fd.append('address', $('fAddress').value.trim());
+    fd.append('guardian', $('fGuardian').value.trim());
+    fd.append('branch', $('fBranch').value.trim());
+    fd.append('areaOffice', $('fAreaOffice').value.trim());
+    fd.append('staffCategory', $('fStaffCategory').value);
+    fd.append('joiningDate', $('fJoining').value);
+    fd.append('remarks', $('fRemarks').value);
+    fd.append('photo', photoDataUrl);
+
+    lockForm();
+    $('submitBtn').textContent = 'Submitting…';
+
+    try{
+      const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.result === 'success') {
+        unlockForm();
+        showToast('Information submitted successfully. Thank you!');
+        $('idForm').reset();
+        photoDataUrl = '';
+        $('photoThumb').innerHTML = 'No photo';
+      } else {
+        throw new Error(data.message || 'unknown error');
+      }
+    }catch(err){
+      unlockForm();
+      statusEl.textContent = 'Sorry, submission failed. Please try again.';
+      statusEl.className = 'text-danger small';
+      console.error(err);
+    }finally{
+      $('submitBtn').textContent = 'Submit';
+    }
+  });
+
+  function showToast(msg){
+    const t = $('toast');
+    t.className = 'alert alert-success small';
+    t.textContent = msg;
+    window.scrollTo({top:0, behavior:'smooth'});
+    setTimeout(()=>{ t.classList.add('d-none'); }, 5000);
+  }
+// ==================== Form script END ======= SANGRAM Employee Data ============
+</script>
+
+</body>
+</html>
